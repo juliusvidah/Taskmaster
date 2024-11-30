@@ -164,7 +164,7 @@
               
             <!-- Content Section -->
             <div class="content">
-                <img src="https://img.freepik.com/free-vector/sign-up-concept-illustration_114360-7965.jpg" alt="" width="500px" height="500px">
+                <img src="./images/signin.png" alt="" width="500px" height="500px">
             </div>
         </div>
    </div>
@@ -198,7 +198,7 @@
         passwordError.textContent = ''; // Clear errors if valid
 
         try {
-          const response = await fetch('http://localhost:5000/users', {
+          const response = await fetch('https://taskmaster-3-w83b.onrender.com/users', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
