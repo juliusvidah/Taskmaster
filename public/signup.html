@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SignUp Form</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+        }
+
+        .main {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .wrapper {
+            display: flex;
+            width: 100%;
+            height: 99vh;
+            border: 1px solid #ddd;
+            /* box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); */
+            border-radius: 8px;
+            overflow: hidden;
+            flex-wrap: wrap;
+        }
+
+        .form {
+            flex: 1;
+            background-color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            border-right: 1px solid #ddd;
+            box-sizing: border-box;
+        }
+
+        .form form {
+            width: 100%;
+            max-width: 380px;
+            margin: 0 auto;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .form h2 {
+          text-align: center;
+            color: #0071a5;
+            font-weight: bolder;
+            margin-bottom: 20px;
+        }
+
+        .form label {
+          display: block;
+            font-size: 14px;
+            color: #0071a5;
+            font-weight: bolder;
+            margin-bottom: 5px;
+        }
+
+        .form input {
+          width: 100%;
+            max-width: 100%; 
+            padding: 10px;
+            font-size: 14px;
+            margin-bottom: 15px;
+            border: 2px solid #0096FF;
+            border-radius: 100px;
+            outline: none;
+            box-sizing: border-box;
+        }
+
+        .form button {
+          width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            color: white;
+            background-color: #0096FF;
+            border: none;
+            border-radius: 100px;
+            cursor: pointer;
+            font-weight: bolder;
+            transition: background-color 0.3s ease;
+        }
+
+        .form button:hover {
+            color: #0071a5;
+            font-weight: bolder;
+            background-color: #fff;
+            border: 2px solid #0071a5;
+        }
+
+        .content {
+          flex: 1;
+            background-color: #0096FF;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-size: 24px;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .error {
+            color: red;
+            font-size: 14px;
+            margin-top: -10px;
+            margin-bottom: 10px;
+        }
+
+        /* Media Query for smaller screens */
+        @media (max-width: 768px) {
+            .wrapper {
+                flex-direction: column;
+                height: 99vh;
+            }
+
+            .content {
+                display: none;
+            }
+
+            .form {
+                border-right: none;
+            }
+
+            .form form {
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+   <div class="main">
+        <div class="wrapper">
+            <!-- Form Section -->
+            <div class="form">
+                <form id="signupForm">
+                  <h2>Sign Up</h2>
+                  <div class="m1">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" placeholder="Enter your username" required>
+                  </div>
+                  <div class="m1">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" placeholder="Enter your email" required>
+                  </div>
+                  <div class="m1">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" placeholder="Enter your password" required>
+                    <div id="passwordError" class="error"></div>
+                  </div>
+                  <a href="login.html" style="font-size: 15px; color: #0071a5; font-weight: bolder; text-decoration: none; font-size: 0.9rem; margin-top: -7px;">
+                    Have an account? Login
+                  </a>
+                  <button type="submit" style="margin-top: 10px;">Sign Up</button>
+                </form>
+              </div>
+              
+            <!-- Content Section -->
+            <div class="content">
+                <img src="https://img.freepik.com/free-vector/sign-up-concept-illustration_114360-7965.jpg" alt="" width="500px" height="500px">
+            </div>
+        </div>
+   </div>
+
+   <script>
+      document.querySelector('#signupForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const username = document.querySelector('#username').value.trim();
+        const email = document.querySelector('#email').value.trim();
+        const password = document.querySelector('#password').value.trim();
+        const passwordError = document.querySelector('#passwordError');
+
+        // Validate Password
+        const passwordRequirements = [
+          { test: (pwd) => /[A-Z]/.test(pwd), error: 'Must contain an uppercase letter.' },
+          { test: (pwd) => /[0-9]/.test(pwd), error: 'Must contain a number.' },
+          { test: (pwd) => /[!@#$%^&*(),.?":{}|<>]/.test(pwd), error: 'Must contain a special character.' },
+          { test: (pwd) => pwd.length >= 8, error: 'Must be at least 8 characters long.' }
+        ];
+
+        const errors = passwordRequirements
+          .filter((requirement) => !requirement.test(password))
+          .map((requirement) => requirement.error);
+
+        if (errors.length > 0) {
+          passwordError.textContent = errors.join(' ');
+          return;
+        }
+
+        passwordError.textContent = ''; // Clear errors if valid
+
+        try {
+          const response = await fetch('http://localhost:5000/users', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ username, email, password }),
+          });
+
+          const result = await response.json();
+
+          if (response.ok) {
+            alert('User created successfully!');
+            window.location.href = "/public/login.html";
+          } else {
+            alert(result.error || 'An unexpected error occurred.');
+          }
+        } catch (err) {
+          console.error('Error during signup:', err);
+          alert('An error occurred while connecting to the server. Please try again.');
+        }
+      });
+   </script>
+</body>
+</html>
